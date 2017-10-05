@@ -11,6 +11,8 @@ L.LatLngGraticule = L.Layer.extend({
         weight: 0.8,
         color: '#aaa',
         font: '12px Verdana',
+        latFixedDecimal: false,
+        lngFixedDecimal: false,
         lngLineCurved: 0,
         latLineCurved: 0,
         zoomInterval: [
@@ -70,9 +72,9 @@ L.LatLngGraticule = L.Layer.extend({
         map.on('move', this._reset, this);
         map.on('moveend', this._reset, this);
 
-// 		if (map.options.zoomAnimation && L.Browser.any3d) {
-// 			map.on('zoom', this._animateZoom, this);
-// 		}
+//      if (map.options.zoomAnimation && L.Browser.any3d) {
+//          map.on('zoom', this._animateZoom, this);
+//      }
 
         this._reset();
     },
@@ -84,9 +86,9 @@ L.LatLngGraticule = L.Layer.extend({
         map.off('move', this._reset, this);
         map.off('moveend', this._reset, this);
 
-// 		if (map.options.zoomAnimation) {
-// 			map.off('zoom', this._animateZoom, this);
-// 		}
+//      if (map.options.zoomAnimation) {
+//          map.off('zoom', this._animateZoom, this);
+//      }
     },
 
     addTo: function (map) {
@@ -119,6 +121,10 @@ L.LatLngGraticule = L.Layer.extend({
         return this.options.attribution;
     },
 
+    forceRedraw: function () {
+        this._reset();
+    },
+
     _initCanvas: function () {
         this._container = L.DomUtil.create('div', 'leaflet-image-layer');
 
@@ -141,22 +147,22 @@ L.LatLngGraticule = L.Layer.extend({
         });
     },
 
-// 	_animateZoom: function (e) {
-// 		var map = this._map,
-// 			container = this._container,
-// 			canvas = this._canvas,
-// 			zoom = map.getZoom(),
-// 			center = map.getCenter(),
-// 			scale = map.getZoomScale(zoom),
-// 			nw = map.containerPointToLatLng([0, 0]),
-// 			se = map.containerPointToLatLng([canvas.width, canvas.height]),
+//  _animateZoom: function (e) {
+//      var map = this._map,
+//          container = this._container,
+//          canvas = this._canvas,
+//          zoom = map.getZoom(),
+//          center = map.getCenter(),
+//          scale = map.getZoomScale(zoom),
+//          nw = map.containerPointToLatLng([0, 0]),
+//          se = map.containerPointToLatLng([canvas.width, canvas.height]),
 //
-// 			topLeft = map._latLngToNewLayerPoint(nw, zoom, center),
-// 			size = map._latLngToNewLayerPoint(se, zoom, center)._subtract(topLeft),
-// 			origin = topLeft._add(size._multiplyBy((1 / 2) * (1 - 1 / scale)));
+//          topLeft = map._latLngToNewLayerPoint(nw, zoom, center),
+//          size = map._latLngToNewLayerPoint(se, zoom, center)._subtract(topLeft),
+//          origin = topLeft._add(size._multiplyBy((1 / 2) * (1 - 1 / scale)));
 //
-// 		L.DomUtil.setTransform(container, origin, scale);
-// 	},
+//      L.DomUtil.setTransform(container, origin, scale);
+//  },
 
     _reset: function () {
         var container = this._container,
@@ -192,13 +198,28 @@ L.LatLngGraticule = L.Layer.extend({
             return this.options.latFormatTickLabel(lat);
         }
 
-        // todo: format type of float
+        var latFixedDecimal = parseInt(this.options.latFixedDecimal)
+        var formatToFixedDecimal = !isNaN(latFixedDecimal)
+
         if (lat < 0) {
+            if (formatToFixedDecimal) {
+                return '' + (lat*-1).toFixed(latFixedDecimal) + 'S';
+            }
+
             return '' + (lat*-1) + 'S';
         }
         else if (lat > 0) {
+            if (formatToFixedDecimal) {
+                return '' + lat.toFixed(latFixedDecimal) + 'N';
+            }
+
             return '' + lat + 'N';
         }
+
+        if (formatToFixedDecimal) {
+            return '' + lat.toFixed(latFixedDecimal);
+        }
+
         return '' + lat;
     },
 
@@ -207,22 +228,49 @@ L.LatLngGraticule = L.Layer.extend({
             return this.options.lngFormatTickLabel(lng);
         }
 
-        // todo: format type of float
+        var lngFixedDecimal = parseInt(this.options.lngFixedDecimal)
+        var formatToFixedDecimal = !isNaN(lngFixedDecimal)
+
         if (lng > 180) {
+            if (formatToFixedDecimal) {
+              return '' + (360 - lng).toFixed(lngFixedDecimal) + 'W';
+            }
+
             return '' + (360 - lng) + 'W';
         }
         else if (lng > 0 && lng < 180) {
+            if (formatToFixedDecimal) {
+                return '' + lng.toFixed(lngFixedDecimal) + 'E';
+            }
+
             return '' + lng + 'E';
         }
         else if (lng < 0 && lng > -180) {
+            if (formatToFixedDecimal) {
+                return '' + (lng*-1).toFixed(lngFixedDecimal) + 'W';
+            }
+
             return '' + (lng*-1) + 'W';
         }
         else if (lng == -180) {
+            if (formatToFixedDecimal) {
+                return '' + (lng*-1).toFixed(lngFixedDecimal);
+            }
+
             return '' + (lng*-1);
         }
         else if (lng < -180) {
+            if (formatToFixedDecimal) {
+                return '' + (360 + lng).toFixed(lngFixedDecimal) + 'W';
+            }
+
             return '' + (360 + lng) + 'W';
         }
+
+        if (formatToFixedDecimal) {
+            return '' + lng.toFixed(lngFixedDecimal);
+        }
+
         return '' + lng;
     },
 
