@@ -72,10 +72,6 @@ L.LatLngGraticule = L.Layer.extend({
         map.on('move', this._reset, this);
         map.on('moveend', this._reset, this);
 
-//      if (map.options.zoomAnimation && L.Browser.any3d) {
-//          map.on('zoom', this._animateZoom, this);
-//      }
-
         this._reset();
     },
 
@@ -85,10 +81,6 @@ L.LatLngGraticule = L.Layer.extend({
         map.off('viewreset', this._reset, this);
         map.off('move', this._reset, this);
         map.off('moveend', this._reset, this);
-
-//      if (map.options.zoomAnimation) {
-//          map.off('zoom', this._animateZoom, this);
-//      }
     },
 
     addTo: function (map) {
@@ -146,23 +138,6 @@ L.LatLngGraticule = L.Layer.extend({
             onload: L.bind(this._onCanvasLoad, this)
         });
     },
-
-//  _animateZoom: function (e) {
-//      var map = this._map,
-//          container = this._container,
-//          canvas = this._canvas,
-//          zoom = map.getZoom(),
-//          center = map.getCenter(),
-//          scale = map.getZoomScale(zoom),
-//          nw = map.containerPointToLatLng([0, 0]),
-//          se = map.containerPointToLatLng([canvas.width, canvas.height]),
-//
-//          topLeft = map._latLngToNewLayerPoint(nw, zoom, center),
-//          size = map._latLngToNewLayerPoint(se, zoom, center)._subtract(topLeft),
-//          origin = topLeft._add(size._multiplyBy((1 / 2) * (1 - 1 / scale)));
-//
-//      L.DomUtil.setTransform(container, origin, scale);
-//  },
 
     _reset: function () {
         var container = this._container,
