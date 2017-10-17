@@ -1,0 +1,16 @@
+{
+  "name": "leaflet.graticule",
+  "version": "1.0.0",
+  "description": "Hacked version of graticule plugin for Leaflet (includes forceRedraw() method)",
+  "main": "Leaflet.Graticule.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mesonyx/Leaflet.Graticule.git"
+  },
+  "author": "Mesonyx",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/Mesonyx/Leaflet.Graticule/issues"
+  },
+  "homepage": "https://github.com/Mesonyx/Leaflet.Graticule#readme"
+}
